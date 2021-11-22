@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
+    kotlin("plugin.serialization") version "1.5.31"
     id("com.android.library")
 }
 
@@ -14,22 +15,39 @@ kotlin {
 
     cocoapods {
         summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
+        homepage = "https://www.jjerrell.dev/pocket-lib/"
         ios.deploymentTarget = "14.1"
         framework {
-            baseName = "shared"
+            baseName = "PocketLibrary"
         }
     }
-    
+
+    val ktorVersion = "1.6.4"
+    val logbackVersion = "1.2.6"
+
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+                implementation("ch.qos.logback:logback-classic:$logbackVersion")
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-logging:$ktorVersion")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("io.ktor:ktor-client-mock:$ktorVersion")
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-cio:$ktorVersion")
+            }
+        }
         val androidTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
@@ -44,6 +62,9 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             //iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
+            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting
