@@ -3,6 +3,10 @@ package app.jjerrell.lib.pocket.service
 import io.ktor.client.*
 import io.ktor.client.request.*
 
+/**
+ * The level of READ/WRITE access an API implements. A NotImplementedError will be thrown for attempting
+ * to use methods that have not been implemented at a given level
+ */
 enum class ApiLevel {
     READ,
     CREATE,
@@ -14,6 +18,8 @@ interface Route {
     val path: String
 }
 
+// TODO: Implement plural/singular route
+// TODO: collection/item/collection pattern for plurals
 sealed interface AppApi<S: Dto> {
     val client: HttpClient
     val baseApiUrl: String
